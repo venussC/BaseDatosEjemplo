@@ -18,6 +18,10 @@ import com.recibe.basedatosejemplo.ui.MainActivity;
 
 import java.util.ArrayList;
 
+/**
+ * Adaptador para RecyclerView que maneja la lista de usuarios
+ * Implementa las operaciones de edición y eliminación desde la lista
+ */
 public class UsuarioAdaptador extends RecyclerView.Adapter<UsuarioAdaptador.ViewHolder> {
 
     private Context context;
@@ -37,18 +41,24 @@ public class UsuarioAdaptador extends RecyclerView.Adapter<UsuarioAdaptador.View
 
     @Override
     public void onBindViewHolder(@NonNull UsuarioAdaptador.ViewHolder holder, int position) {
+        // === MOSTRAR DATOS EN LA VISTA ===
             holder.lblID.setText(String.valueOf(lista.get(position).getId_usuario()));
             holder.lblNombre.setText(lista.get(position).getNombre());
             holder.lblUsuario.setText(lista.get(position).getUsuario());
             holder.lblPassword.setText(lista.get(position).getPassword());
+
+        // === EVENTO: CLIC PARA EDITAR ===
             holder.Linear.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    // Cargar datos del usuario seleccionado en el formulario
                     MainActivity mainActivity = (MainActivity) context;
                     EditText txtIdusuario  = mainActivity.findViewById(R.id.txtIdusuario);
                     EditText txtUsuario1  = mainActivity.findViewById(R.id.txtUsuario1);
                     EditText txtPassword1  = mainActivity.findViewById(R.id.txtPassword1);
                     EditText txtNombre  = mainActivity.findViewById(R.id.txtNombre);
+
+                    // Establecer valores en los campos
                     txtIdusuario.setText(String.valueOf(lista.get(position).getId_usuario()));
                     txtUsuario1.setText(String.valueOf(lista.get(position).getUsuario()));
                     txtPassword1.setText(String.valueOf(lista.get(position).getPassword()));
@@ -56,16 +66,19 @@ public class UsuarioAdaptador extends RecyclerView.Adapter<UsuarioAdaptador.View
                 }
             });
 
+        // === EVENTO: CLIC LARGO PARA ELIMINAR ===
         holder.Linear.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
+                // DELETE: Eliminar usuario directamente
                     MainActivity mainActivity = (MainActivity) context;
                     Usuario obj = new Usuario(mainActivity);
                     obj.setId_usuario(lista.get(position).getId_usuario());
+
                     if (obj.eliminar()) {
-                        mainActivity.muestra_todos();
+                        mainActivity.muestra_todos(); // Refrescar lista
                         Util.muestra_dialogo( mainActivity, "Se ha eliminado el usuario");
-                        mainActivity.limpia();
+                        mainActivity.limpia();  // Limpiar formulario
                     }
                     return true;
             }
