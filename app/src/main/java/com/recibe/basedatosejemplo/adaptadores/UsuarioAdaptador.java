@@ -1,6 +1,8 @@
 package com.recibe.basedatosejemplo.adaptadores;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,11 +84,21 @@ public class UsuarioAdaptador extends RecyclerView.Adapter<UsuarioAdaptador.View
                     Usuario obj = new Usuario(mainActivity);
                     obj.setId_usuario(lista.get(currentPosition).getId_usuario());
 
-                    if (obj.eliminar()) {
-                        mainActivity.muestra_todos(); // Refrescar lista
-                        Util.muestra_dialogo(mainActivity, "Se ha eliminado el usuario");
-                        mainActivity.limpia();  // Limpiar formulario
-                    }
+                    new AlertDialog.Builder(mainActivity)
+                            .setTitle("Confirmar eliminación")
+                            .setMessage("¿Estás seguro de que deseas eliminar este usuario?")
+                            .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    if (obj.eliminar()) {
+                                        mainActivity.muestra_todos(); // Refrescar lista
+                                        Util.muestra_dialogo(mainActivity, "Se ha eliminado el usuario");
+                                        mainActivity.limpia();  // Limpiar formulario
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancelar", null)
+                            .show();
                 }
                 return true;
             }
